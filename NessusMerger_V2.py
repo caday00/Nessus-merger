@@ -51,6 +51,8 @@ def filter(files):
         r = r.replace("cm:compliance","cmcompliance")
         r = r.replace("xmlns:cm","xmlnscm")
         w = open(file,'w')
+        w.write(r)
+        w.flush()
         w.close()
 
 
