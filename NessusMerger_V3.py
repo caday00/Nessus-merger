@@ -1,12 +1,16 @@
 """ 
  Angelis Pseftis
- v2
+ v3
+ Change Notes:
+ --Works with Python 3.6
+ --Added argparse vs sys.argv[x] : functionally identical
 """
 
 from xml.etree import ElementTree as et
 import sys
 import os
 import json
+import argparse
 
 
 def compute(ele):
@@ -57,16 +61,19 @@ def filter(files):
 
 
 if __name__ == '__main__':
-    if sys.argv[1] == "-d":
-        directory = os.path.abspath(sys.argv[2])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--directory",help="Enter --directory followed by path")
+    args = parser.parse_args()
+    if args.directory:
+        directory = os.path.abspath(args.directory)
         results = []
         results += [os.path.abspath(os.path.join(directory,each)) for each in os.listdir(directory) if each.endswith('.nessus')]
-        print results
+        print (results)
         filter(results)
         r = XMLCombiner(tuple(results)).combine()
-        r = r.replace("cmcompliance","cm:compliance")
-        r = r.replace("xmlnscm","xmlns:cm")
+        r = r.replace(b"cmcompliance",b"cm:compliance")
+        r = r.replace(b"xmlnscm",b"xmlns:cm")
         f = open("output.nessus","w")
-        f.write(r)
+        f.write(str(r, 'utf-8'))
         f.flush()
         f.close()
